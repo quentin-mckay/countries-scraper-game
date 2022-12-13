@@ -6,29 +6,34 @@ from random import choice
 from countries import countries # list of 32 countries
 
 
-os.system('clear')
+# os.system('clear')
 
 # print(countries)
 
 # country = input('Country: ')
 
+
 country = 'Argentina'
-country = 'Japan'
+# country = 'Japan'
+# country = 'Saudi_Arabia'
+# country = 'Wales'
 country = choice(countries)
 
 print(country)
 
 response = requests.get(f'https://en.wikipedia.org/wiki/{country}')
-
-
 soup = BeautifulSoup(response.text, 'html.parser')
 
 # ===== get info paragraph =====
 p_tags = soup.select('.mw-parser-output > p') # hook in and get list of <p>'s
-
 info_paragraph = p_tags[1].get_text() # get text from 1st <p>
 
+
+# ===== regex cleaning functions =====
+
 def filter_country_name(string, country_name, replacement=''):
+	# country_name = country_name.replace('_', ' ')
+
 	start_name = country_name[:4] # slice the first 4 letters
 	end_name = country_name[-4:] # slice the last 4 letters 
 
@@ -41,6 +46,7 @@ def filter_country_name(string, country_name, replacement=''):
 
 
 def remove_footnotes_and_parens(string):
+	# country_name = country_name.replace('_', ' ')
 	# match either (.....) or [.....]
 	# note: uses non-greedy capture modifier and
 	regex = re.compile(r'\[.*?\]|\(.*?\)\)*')
@@ -48,15 +54,25 @@ def remove_footnotes_and_parens(string):
 
 
 info_paragraph = filter_country_name(info_paragraph, country, replacement='_') # filter the 
-
 # print(info_paragraph)
 # print(remove_footnotes_and_parens((info_paragraph)))
 # print(info_paragraph.split('.')[0]) 
 # print(choice(info_paragraph.split('.')))
 
 
-# ===== get table data =====
+# ===== get anthem =====
+td_tag = soup.select('.anthem')[0]
+strings_list = list(td_tag.stripped_strings)
+last_two = strings_list[-2:]
+anthem = last_two[1] if len(last_two[1]) > 5 else last_two[0]
+print()
+print(list(strings_list))
+print()
+print(anthem)
 
+
+
+# ===== get table data =====
 th_tags = soup.select('.ib-country')[0].find_all('th') # get list <th>'s
 # print(th_tags)
 
@@ -89,7 +105,7 @@ for th_tag in th_tags:
 			prime_minister = td.find('a').string # get string of first <a> in the <td>
 			info['prime minister'] = prime_minister
 print()
-print(info, '\n')
+# print(info, '\n')
 		
 
 # tr_tags = soup('div', string="and largest city")[0].parent.strings
