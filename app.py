@@ -14,11 +14,15 @@ from countries import countries # list of 32 countries
 
 
 country = 'Argentina'
+country = 'Denmark'
 # country = 'Japan'
 # country = 'Saudi_Arabia'
 # country = 'Wales'
+# country = 'South_Korea'
+
 country = choice(countries)
 
+print()
 print(country)
 
 response = requests.get(f'https://en.wikipedia.org/wiki/{country}')
@@ -29,10 +33,10 @@ p_tags = soup.select('.mw-parser-output > p') # hook in and get list of <p>'s
 info_paragraph = p_tags[1].get_text() # get text from 1st <p>
 
 
-# ===== regex cleaning functions =====
+# ============================== regex cleaning functions ==============================
 
 def filter_country_name(string, country_name, replacement=''):
-	# country_name = country_name.replace('_', ' ')
+	country_name = country_name.replace('_', ' ') # ex turn 'Saudi_Arabia' into 'Saudi Arabia'
 
 	start_name = country_name[:4] # slice the first 4 letters
 	end_name = country_name[-4:] # slice the last 4 letters 
@@ -46,7 +50,6 @@ def filter_country_name(string, country_name, replacement=''):
 
 
 def remove_footnotes_and_parens(string):
-	# country_name = country_name.replace('_', ' ')
 	# match either (.....) or [.....]
 	# note: uses non-greedy capture modifier and
 	regex = re.compile(r'\[.*?\]|\(.*?\)\)*')
@@ -54,29 +57,41 @@ def remove_footnotes_and_parens(string):
 
 
 info_paragraph = filter_country_name(info_paragraph, country, replacement='_') # filter the 
+
 # print(info_paragraph)
 # print(remove_footnotes_and_parens((info_paragraph)))
 # print(info_paragraph.split('.')[0]) 
 # print(choice(info_paragraph.split('.')))
 
 
+# ============================== Fill info dictionary ========================================
+info = {}
+
+
 # ===== get anthem =====
-td_tag = soup.select('.anthem')[0]
-strings_list = list(td_tag.stripped_strings)
-last_two = strings_list[-2:]
-anthem = last_two[1] if len(last_two[1]) > 5 else last_two[0]
-print()
-print(list(strings_list))
-print()
-print(anthem)
+anthem = ''
+try:
+	td_tag = soup.select('.anthem')[0]
+	strings_list = list(td_tag.stripped_strings)
+	last_few = strings_list[-3:] # anthem is always in one of the last few spots
+	anthem = [s for s in last_few if len(s) > 5][-1] # find the one that's not a punctuation
+
+	# print()
+	# print(list(strings_list))
+	print()
+	print(anthem.replace('"', ''))
+except IndexError: # for some reason Denmark is different to every other country
+	print('no anthem')
+
+
+info['anthem'] = anthem.replace('"', '') # get rid of quotes if needed
 
 
 
 # ===== get table data =====
-th_tags = soup.select('.ib-country')[0].find_all('th') # get list <th>'s
+th_tags = soup.select('.vcard')[0].find_all('th') # get list <th>'s
 # print(th_tags)
 
-info = {}
 
 for th_tag in th_tags:
 
@@ -104,10 +119,8 @@ for th_tag in th_tags:
 			td = th_tag.find_next_sibling('td') # find corresponding <td>
 			prime_minister = td.find('a').string # get string of first <a> in the <td>
 			info['prime minister'] = prime_minister
-print()
-# print(info, '\n')
-		
 
-# tr_tags = soup('div', string="and largest city")[0].parent.strings
-# print(list(tr_tags))
+print()
+print(info, '\n')
+		
 
