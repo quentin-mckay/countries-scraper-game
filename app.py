@@ -126,6 +126,7 @@ for th_tag in th_tags:
 			currency = filter_country_name(currency, country, replacement='').strip()
 			info['currency'] = currency
 
+		# check for either President or Prime Minister
 		if 'President' in strings:
 			td = th_tag.find_next_sibling('td') # find corresponding <td>
 			president = td.find('a').string # get string of first <a> in the <td>
@@ -139,3 +140,66 @@ print()
 print(info, '\n')
 		
 
+
+
+
+def play_game():
+	answer_country = choice(countries) # pick random country
+
+	country_info = scrape_country_info(answer_country)
+
+	guesses_remaining = 6
+
+	print(answer_country)
+
+	while guesses_remaining > 0:
+
+		# display options
+		guess_word = 'guesses' if guesses_remaining > 0 else 'guess'
+		print(f"{guesses_remaining} {guess_word} remaining. Select a hint option: ")
+		options = [
+				'[1] Random sentence',
+				'[2] Random fact',
+				'[3] Flag colour text'
+			]
+		[print(option) for option in options]
+
+		# get guess from user
+		guess = input("Guess the country: ")
+
+		if guess == answer_country:
+			print("You win!")
+			break
+
+
+
+		guesses_remaining -= 1
+		
+
+
+def show_high_scores():
+	print('High Scores')
+
+	
+
+def start():
+
+	print('--- Welcome to the World Cup Country Quiz Game ---\n')
+	print('Please select an option:')
+
+	options = ['[1] Play quiz game', '[2] Show High Scores']
+	[print(option) for option in options] # print out each option on a new line
+
+	menu_choice = input('> ')
+
+
+	match menu_choice:
+		case '1':
+			play_game()
+		case '2':
+			show_high_scores()
+
+
+
+if __name__ == '__main__':
+	start()
