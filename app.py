@@ -3,13 +3,21 @@ from bs4 import BeautifulSoup
 import re
 import os
 from random import choice
+from countries import countries # list of 32 countries
+
 
 os.system('clear')
+
+# print(countries)
 
 # country = input('Country: ')
 
 country = 'Argentina'
 country = 'Japan'
+country = choice(countries)
+
+print(country)
+
 response = requests.get(f'https://en.wikipedia.org/wiki/{country}')
 
 
@@ -57,7 +65,7 @@ info = {}
 for th_tag in th_tags:
 
 	strings = list(th_tag.strings)
-	print(strings)
+	# print(strings)
 
 	if strings:
 
@@ -81,7 +89,7 @@ for th_tag in th_tags:
 			prime_minister = td.find('a').string # get string of first <a> in the <td>
 			info['prime minister'] = prime_minister
 print()
-print(info)
+print(info, '\n')
 		
 
 # tr_tags = soup('div', string="and largest city")[0].parent.strings
