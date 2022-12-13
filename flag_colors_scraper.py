@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from countries import countries
 from time import sleep
-
+from pprint import pp
 
 flag_colors = {}
 
@@ -10,9 +10,11 @@ for country in countries[:10]:
 
 	country_for_url = country
 
-	# edge case for flagcolorcodes.com
+	# edge cases for flagcolorcodes.com
 	if country == 'Netherlands':
-		country_for_url = 'the netherlands'
+		country_for_url = 'the-netherlands'
+	elif country == 'United_States':
+		country_for_url = 'usa'
 
 	# wikipedia uses underscores but flagcolorcodes.com uses hyphens 
 	country_for_url = country_for_url.replace('_', '-')
@@ -27,4 +29,4 @@ for country in countries[:10]:
 
 	sleep(0.5)
 
-print(flag_colors)
+pp(flag_colors)
