@@ -2,9 +2,24 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import os
-from random import choice
+from random import choice, randint
 from countries import countries # list of 32 countries
+from colr import color
 
+def random_color():
+	return (randint(0, 256), randint(0, 256), randint(0, 256))
+
+
+text = color('hello', fore=random_color())
+# text2 = color('hello', fore=(255, 128, 0))
+
+sentence = "This is a random sentence of words"
+
+sentence = ' '.join([color(word, fore=random_color()) for word in sentence.split()])
+
+print(text)
+
+print(sentence)
 
 # os.system('clear')
 
