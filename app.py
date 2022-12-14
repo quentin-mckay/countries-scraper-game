@@ -6,9 +6,10 @@ from random import choice, randint
 from countries import countries # list of 32 countries
 from colr import color
 import json
-from csv import DictReader, DictWriter
+from csv import reader, DictWriter
 from time import time
 from pprint import pp
+from tabulate import tabulate
 
 os.system('clear')
 
@@ -144,12 +145,12 @@ def get_flag_colors(country):
 
 def write_to_high_scores(guesses_remaining, country, elapsed_time):
 	with open('high_scores.csv', 'a', newline='') as file:
-		headers = ['Guesses', 'Country', 'Elapsed Time']
-		writer = DictWriter(file, fieldnames=headers)
-		writer.writerow({
+		headers = ['Guesses', 'Country', 'Time Taken']
+		csv_writer = DictWriter(file, fieldnames=headers)
+		csv_writer.writerow({
 			'Guesses': guesses_remaining,
 			'Country': country,
-			'Elapsed Time': elapsed_time
+			'Time Taken': elapsed_time
 		})
 
 
@@ -219,7 +220,8 @@ def play_game():
 					sentence = choice(sentences)
 					sentence = sentence.strip()
 
-				color_print("Here's a random sentence: \n")
+				color_print("Here's a random sentence:")
+				print()
 				color_print(sentence + '.')
 
 			# Fact
@@ -285,7 +287,7 @@ def play_game():
 	if again in ('yes', 'y'):
 		return play_game() # return ends execution of the function
 	else:
-		color_print("\nThank's for playing! Bye!\n")
+		print("\nThank's for playing! Bye!\n")
 	
 		
 
@@ -293,11 +295,17 @@ def play_game():
 
 
 
+def get_high_scores():
+	with open('high_scores.csv', 'r') as file:
+		csv_reader = reader(file)
+		return list(csv_reader)
 
 
-def show_high_scores():
-	print('High Scores')
-
+def show_high_scores(scores):
+	# using tabulate package
+	print()
+	print(tabulate(scores, headers='firstrow', numalign='left'))
+	print()
 	
 
 
@@ -366,9 +374,11 @@ def start():
 		case '1':
 			play_game()
 		case '2':
-			show_high_scores()
+			scores = get_high_scores()
+			show_high_scores(scores)
 		case '4':
-			pp(sorted(countries))
+			print()
+			[print(country) for country in sorted(countries)]
 			start() # restart application
 		case 'q' | 'Q':
 			print("\nBye!\n")
