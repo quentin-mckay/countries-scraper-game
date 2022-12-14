@@ -5,43 +5,26 @@ import os
 from random import choice, randint
 from countries import countries # list of 32 countries
 from colr import color
+import json
+import csv
 
 
-
-def random_color():
-	return (randint(0, 256), randint(0, 256), randint(0, 256))
-
-
-text = color('hello', fore=random_color())
-# text2 = color('hello', fore=(255, 128, 0))
-
-sentence = "This is a random sentence of words"
-
-sentence = ' '.join([color(word, fore=random_color()) for word in sentence.split()])
-
-print(text)
-
-print(sentence)
+# def random_color():
+# 	return (randint(0, 256), randint(0, 256), randint(0, 256))
 
 
+# text = color('hello', fore=random_color())
+# # text2 = color('hello', fore=(255, 128, 0))
 
+# sentence = "This is a random sentence of words"
+
+# sentence = ' '.join([color(word, fore=random_color()) for word in sentence.split()])
+
+# print(text)
+
+# print(sentence)
 
 os.system('clear')
-
-# print(countries)
-
-# country = input('Country: ')
-
-
-country = 'Argentina'
-country = 'Denmark'
-# country = 'Japan'
-# country = 'Saudi_Arabia'
-# country = 'Wales'
-# country = 'South_Korea'
-
-
-
 
 # ============================== regex cleaning functions ==============================
 
@@ -150,17 +133,17 @@ def scrape_country_info(country):
 
 	return info
 
-# def split_into_chunks(lst, chunk_size):
-# 	new_list = []
-# 	for i in range(0, len(lst), chunk_size):
-		
 
+def get_flag_colors(country):
+	with open('flag_colors.json') as file:
+		flag_colors_dict = json.load(file)
 
-
-# sentence = ' '.join([color(word, fore=random_color()) for word in sentence.split()])
+	return flag_colors_dict[country]
 
 def play_game():
 	answer_country = choice(countries) # pick random country
+
+
 
 	print()
 	print(answer_country, '\n')
@@ -168,14 +151,15 @@ def play_game():
 	info = scrape_country_info(answer_country)
 	# print(country_info)
 
+	flag_colors = get_flag_colors(answer_country)
+	print(flag_colors)
+
 	starting_guesses = 6
 	guesses_remaining = starting_guesses
 	facts_remaining = 4
 
 
-	
-
-
+	# main hints loop
 	while guesses_remaining > 0:
 
 		# display options

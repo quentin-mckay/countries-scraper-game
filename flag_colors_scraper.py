@@ -3,10 +3,11 @@ from bs4 import BeautifulSoup
 from countries import countries
 from time import sleep
 from pprint import pp
+import json
 
 flag_colors = {}
 
-for country in countries[:10]:
+for country in countries:
 
 	country_for_url = country
 
@@ -29,4 +30,8 @@ for country in countries[:10]:
 
 	sleep(0.5)
 
-pp(flag_colors)
+# pp(flag_colors)
+json_object = json.dumps(flag_colors)
+
+with open('flag_colors.json', 'w') as outfile:
+	outfile.write(json_object)
