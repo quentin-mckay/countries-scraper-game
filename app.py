@@ -150,6 +150,15 @@ def scrape_country_info(country):
 
 	return info
 
+# def split_into_chunks(lst, chunk_size):
+# 	new_list = []
+# 	for i in range(0, len(lst), chunk_size):
+		
+
+
+
+# sentence = ' '.join([color(word, fore=random_color()) for word in sentence.split()])
+
 def play_game():
 	answer_country = choice(countries) # pick random country
 
@@ -162,6 +171,9 @@ def play_game():
 	starting_guesses = 6
 	guesses_remaining = starting_guesses
 	facts_remaining = 4
+
+
+	
 
 
 	while guesses_remaining > 0:
@@ -220,11 +232,16 @@ def play_game():
 				elif facts_remaining == 0:
 					print('Sorry, there are no new facts. Please choose another hint type.\n')
 					continue
-				
-				print()
 
 				facts_remaining -= 1
+			case '3':
+				if num_flag_colors == len(flag_colors):
+					print("Maximum flag colors reached. Please choose another hint type.")
+					continue
+				else:
+					num_flag_colors += 1
 
+		print()
 
 		# get guess from user
 		guess = input("Guess the country: ")
@@ -257,12 +274,37 @@ def show_high_scores():
 
 	
 
+def color_print(text, num_colors, colors_list):
+	if num_colors == 0:
+		print(text)
+	else:
+		colored_words_list = []
+
+		for index, word in enumerate(text.split()):
+		
+			i = ((index + 1) % num_colors)
+			i = 0 if i < 0 else i # make sure it's not below 0
+			hex = colors_list[i]
+
+			colored_word = color(word, fore=hex)
+			colored_words_list.append(colored_word)
+
+		output = ' '.join(colored_words_list)
+		print(output)
+
+
 def start():
+
+
+	num_flag_colors = 3
+	flag_colors = ['ff0000', '00ff00', '0000ff']
+
+	color_print('hello this is a random sentence of lots of words', num_flag_colors, flag_colors)
 
 	print('\n--- Welcome to the World Cup Country Quiz Game ---\n')
 	print('Please select an option:\n')
 
-	options = ['[1] Play quiz game', '[2] Show High Scores', '']
+	options = ['[1] Play Quiz', '[2] Show High Scores', '']
 	[print(option) for option in options] # print out each option on a new line
 
 	menu_choice = input('> ')
