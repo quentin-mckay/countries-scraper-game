@@ -8,20 +8,20 @@ from colr import color
 
 
 
-# def random_color():
-# 	return (randint(0, 256), randint(0, 256), randint(0, 256))
+def random_color():
+	return (randint(0, 256), randint(0, 256), randint(0, 256))
 
 
-# text = color('hello', fore=random_color())
-# # text2 = color('hello', fore=(255, 128, 0))
+text = color('hello', fore=random_color())
+# text2 = color('hello', fore=(255, 128, 0))
 
-# sentence = "This is a random sentence of words"
+sentence = "This is a random sentence of words"
 
-# sentence = ' '.join([color(word, fore=random_color()) for word in sentence.split()])
+sentence = ' '.join([color(word, fore=random_color()) for word in sentence.split()])
 
-# print(text)
+print(text)
 
-# print(sentence)
+print(sentence)
 
 
 
@@ -156,11 +156,12 @@ def play_game():
 	print()
 	print(answer_country, '\n')
 
-	country_info = scrape_country_info(answer_country)
+	info = scrape_country_info(answer_country)
 	# print(country_info)
 
 	starting_guesses = 6
 	guesses_remaining = starting_guesses
+	facts_remaining = 4
 
 
 	while guesses_remaining > 0:
@@ -170,31 +171,60 @@ def play_game():
 		print(f"{guesses_remaining} {guess_word} remaining. Select a hint option: \n")
 		options = [
 				'[1] Random sentence',
-				'[2] Random fact',
-				'[3] Flag colour text',
+				'[2] Fact',
+				'[3] Flag color text',
 				''
 			]
 		[print(option) for option in options]
 
 
-		hint_option = ''
-		while hint_option not in ('1', '2', '3'):
-			hint_option = input('> ')
-			print()
-		
+		# hint_option = ''
+		# while hint_option not in ('1', '2', '3'):
+		hint_option = input('> ')
+		print()
+
 
 		match hint_option:
 			# Random Sentence
 			case '1':
-				sentences = country_info['second paragraph'].split('.')
+				combined = info['first paragraph'] + info['second paragraph']
+				sentences = combined.split('.')
 				# print(sentences)
 
 				sentence = ''
 				while len(sentence) < 5: # filter out occasional oddities
 					sentence = choice(sentences)
+					sentence = sentence.strip()
 
 				print("Here's a random sentence: \n")
 				print(sentence + '.', '\n')
+
+			# Fact
+			case '2':
+				# anthem
+				if facts_remaining == 4:
+					anthem = clean_text(info['anthem'], answer_country)
+					print(f"The national anthem of the country is {anthem}.")
+				# leader
+				elif facts_remaining == 3:
+					if info.get('president'):
+						print(f"The country's president is {info['president']}.")
+					elif info.get('prime minister'):
+						print(f"The country's prime minister is {info['prime minister']}.")
+				# currency
+				elif facts_remaining == 2:
+					print(f"The country's currency is {info['currency']}.")
+				# capital
+				elif facts_remaining == 1:
+					print(f"The country's capital is {info['capital']}.")
+				elif facts_remaining == 0:
+					print('Sorry, there are no new facts. Please choose another hint type.\n')
+					continue
+				
+				print()
+
+				facts_remaining -= 1
+
 
 		# get guess from user
 		guess = input("Guess the country: ")
@@ -207,6 +237,18 @@ def play_game():
 
 
 		guesses_remaining -= 1
+
+	print(f'Sorry you ran out of guesses. The correct country was {answer_country}.\n')
+
+	again = ''
+	while again not in ('y', 'yes', 'n', 'no'):
+		again = input("Would you like to play again? (y/n) ").lower()
+
+	if again in ('yes', 'y'):
+		return play_game() # return ends execution of the function
+	else:
+		print("\nThank's for playing! Bye!\n")
+	
 		
 
 
