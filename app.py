@@ -301,10 +301,18 @@ def get_high_scores():
 		return list(csv_reader)
 
 
-def show_high_scores(scores):
-	# using tabulate package
+def show_high_scores(csv_list):
+	# seperate header so can sort the scores
+	headers, scores = csv_list[0], csv_list[1:]
+
+	# sort by first item in list (guesses)
+	
+	scores = sorted(scores, key=lambda row: row[0], reverse=True)
+
+	result = [headers] + scores
+
 	print()
-	print(tabulate(scores, headers='firstrow', numalign='left'))
+	print(tabulate(result, headers='firstrow', numalign='left'))
 	print()
 	
 
