@@ -6,25 +6,14 @@ from random import choice, randint
 from countries import countries # list of 32 countries
 from colr import color
 import json
-import csv
-
-
-# def random_color():
-# 	return (randint(0, 256), randint(0, 256), randint(0, 256))
-
-
-# text = color('hello', fore=random_color())
-# # text2 = color('hello', fore=(255, 128, 0))
-
-# sentence = "This is a random sentence of words"
-
-# sentence = ' '.join([color(word, fore=random_color()) for word in sentence.split()])
-
-# print(text)
-
-# print(sentence)
+from csv import DictReader, DictWriter
+from time import time
+from pprint import pp
 
 os.system('clear')
+
+start_time = time()
+
 
 # ============================== regex cleaning functions ==============================
 
@@ -78,8 +67,6 @@ def scrape_country_info(country):
 
 
 	# ============================== Fill info dictionary ========================================
-
-
 	# ===== get anthem =====
 	anthem = ''
 	try:
@@ -91,7 +78,8 @@ def scrape_country_info(country):
 		# print()
 		# print(list(strings_list))
 	except IndexError: # for some reason Denmark is different to every other country
-		print('no anthem')
+		# print('no anthem')
+		pass
 
 
 	info['anthem'] = anthem.replace('"', '') # get rid of quotes if needed
@@ -134,16 +122,51 @@ def scrape_country_info(country):
 	return info
 
 
+
+
+
+
+
+
+
+
+
+
 def get_flag_colors(country):
 	with open('flag_colors.json') as file:
 		flag_colors_dict = json.load(file)
 
 	return flag_colors_dict[country]
 
+
+
+
+
+def write_to_high_scores(guesses_remaining, country, elapsed_time):
+	with open('high_scores.csv', 'a', newline='') as file:
+		headers = ['Guesses', 'Country', 'Elapsed Time']
+		writer = DictWriter(file, fieldnames=headers)
+		writer.writerow({
+			'Guesses': guesses_remaining,
+			'Country': country,
+			'Elapsed Time': elapsed_time
+		})
+
+
+
+
+# ======================================== PLay Game ============================================
+# one little hacky fix here. probably bad practice
+# I didn't want to have to pass these into every single call color_print()
+num_flag_colors = 0
+flag_colors = []
+
+
 def play_game():
+	global num_flag_colors, flag_colors
+
 	answer_country = choice(countries) # pick random country
-
-
+	# answer_country = 'France'
 
 	print()
 	print(answer_country, '\n')
@@ -152,7 +175,9 @@ def play_game():
 	# print(country_info)
 
 	flag_colors = get_flag_colors(answer_country)
-	print(flag_colors)
+	# print(flag_colors)
+	num_flag_colors = 0
+
 
 	starting_guesses = 6
 	guesses_remaining = starting_guesses
@@ -163,15 +188,17 @@ def play_game():
 	while guesses_remaining > 0:
 
 		# display options
-		guess_word = 'guesses' if guesses_remaining > 0 else 'guess'
-		print(f"{guesses_remaining} {guess_word} remaining. Select a hint option: \n")
+		guess_word = 'guess' if guesses_remaining == 1 else 'guesses'
+		color_print(f"{guesses_remaining} {guess_word} remaining. Select a hint option: ")
+		print()
+
 		options = [
 				'[1] Random sentence',
 				'[2] Fact',
 				'[3] Flag color text',
 				''
 			]
-		[print(option) for option in options]
+		[color_print(option) for option in options]
 
 
 		# hint_option = ''
@@ -192,38 +219,41 @@ def play_game():
 					sentence = choice(sentences)
 					sentence = sentence.strip()
 
-				print("Here's a random sentence: \n")
-				print(sentence + '.', '\n')
+				color_print("Here's a random sentence: \n")
+				color_print(sentence + '.')
 
 			# Fact
 			case '2':
 				# anthem
 				if facts_remaining == 4:
 					anthem = clean_text(info['anthem'], answer_country)
-					print(f"The national anthem of the country is {anthem}.")
+					color_print(f"The national anthem of the country is {anthem}.")
 				# leader
 				elif facts_remaining == 3:
 					if info.get('president'):
-						print(f"The country's president is {info['president']}.")
+						color_print(f"The country's president is {info['president']}.")
 					elif info.get('prime minister'):
-						print(f"The country's prime minister is {info['prime minister']}.")
+						color_print(f"The country's prime minister is {info['prime minister']}.")
 				# currency
 				elif facts_remaining == 2:
-					print(f"The country's currency is {info['currency']}.")
+					color_print(f"The country's currency is {info['currency']}.")
 				# capital
 				elif facts_remaining == 1:
-					print(f"The country's capital is {info['capital']}.")
+					color_print(f"The country's capital is {info['capital']}.")
 				elif facts_remaining == 0:
-					print('Sorry, there are no new facts. Please choose another hint type.\n')
+					color_print('Sorry, there are no new facts. Please choose another hint type.\n')
 					continue
 
 				facts_remaining -= 1
 			case '3':
 				if num_flag_colors == len(flag_colors):
-					print("Maximum flag colors reached. Please choose another hint type.")
+					color_print("Maximum flag colors reached. Please choose another hint type.")
+					print()
 					continue
 				else:
 					num_flag_colors += 1
+					guesses_remaining -=1
+					continue
 
 		print()
 
@@ -232,14 +262,21 @@ def play_game():
 		print()
 
 		if guess == answer_country:
-			print("You win!")
+			color_print("You win!")
+			print()
+
+			elapsed_time = round(time() - start_time, 2)
+
+			write_to_high_scores(guesses_remaining, answer_country, elapsed_time)
+
 			break
 
 
 
 		guesses_remaining -= 1
 
-	print(f'Sorry you ran out of guesses. The correct country was {answer_country}.\n')
+	if guesses_remaining == 0:
+		color_print(f'Sorry you ran out of guesses. The correct country was {answer_country}.\n')
 
 	again = ''
 	while again not in ('y', 'yes', 'n', 'no'):
@@ -248,9 +285,14 @@ def play_game():
 	if again in ('yes', 'y'):
 		return play_game() # return ends execution of the function
 	else:
-		print("\nThank's for playing! Bye!\n")
+		color_print("\nThank's for playing! Bye!\n")
 	
 		
+
+
+
+
+
 
 
 def show_high_scores():
@@ -258,7 +300,19 @@ def show_high_scores():
 
 	
 
-def color_print(text, num_colors, colors_list):
+
+
+
+
+
+
+def color_print(text):
+	num_colors = num_flag_colors
+	colors_list = flag_colors
+
+	# print(num_colors)
+	# print(colors_list)
+
 	if num_colors == 0:
 		print(text)
 	else:
@@ -277,18 +331,32 @@ def color_print(text, num_colors, colors_list):
 		print(output)
 
 
+
+
+
+
+
+
 def start():
 
 
-	num_flag_colors = 3
-	flag_colors = ['ff0000', '00ff00', '0000ff']
+	# num_flag_colors = 3
+	# flag_colors = ['ff0000', '00ff00', '0000ff']
 
-	color_print('hello this is a random sentence of lots of words', num_flag_colors, flag_colors)
+	# color_print('hello this is a random sentence of lots of words', num_flag_colors, flag_colors)
+	
 
 	print('\n--- Welcome to the World Cup Country Quiz Game ---\n')
 	print('Please select an option:\n')
 
-	options = ['[1] Play Quiz', '[2] Show High Scores', '']
+	options = [
+		'[1] Play Quiz',
+		'[2] Show High Scores', 
+		# '[3] Show Quiz Instructions',
+		'[4] Show List of Countries',
+		'[q] Quit',
+		''
+	]
 	[print(option) for option in options] # print out each option on a new line
 
 	menu_choice = input('> ')
@@ -299,6 +367,12 @@ def start():
 			play_game()
 		case '2':
 			show_high_scores()
+		case '4':
+			pp(sorted(countries))
+			start() # restart application
+		case 'q' | 'Q':
+			print("\nBye!\n")
+			quit()
 
 
 
