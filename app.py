@@ -10,10 +10,16 @@ from csv import reader, DictWriter
 from time import time
 from pprint import pp
 from tabulate import tabulate
+import sys
 
 os.system('clear')
 
-start_time = time()
+
+
+def random_color():
+	return (randint(0, 256), randint(0, 256), randint(0, 256))
+
+# print(random_color())
 
 
 # ============================== regex cleaning functions ==============================
@@ -51,6 +57,7 @@ def clean_text(text, country):
 		
 
 def scrape_country_info(country):
+	'''Scrapes information and first two paragraphs from the country's Wikipedia page'''
 	info = {}
 
 	response = requests.get(f'https://en.wikipedia.org/wiki/{country}')
@@ -134,6 +141,8 @@ def scrape_country_info(country):
 
 
 def get_flag_colors(country):
+	'''Reads flag_colors.json and returns a list of color hex values'''
+
 	with open('flag_colors.json') as file:
 		flag_colors_dict = json.load(file)
 
@@ -143,36 +152,63 @@ def get_flag_colors(country):
 
 
 
-def write_to_high_scores(guesses_remaining, country, elapsed_time):
+def write_to_high_scores(guesses_remaining, elapsed_time, country):
 	with open('high_scores.csv', 'a', newline='') as file:
-		headers = ['Guesses', 'Country', 'Time Taken']
+		headers = ['Guesses', 'Time Taken','Country']
 		csv_writer = DictWriter(file, fieldnames=headers)
 		csv_writer.writerow({
 			'Guesses': guesses_remaining,
-			'Country': country,
-			'Time Taken': elapsed_time
+			'Time Taken': elapsed_time,
+			'Country': country
 		})
 
 
+def get_high_scores():
+	'''Reads high_scores.csv and returns list of all rows'''
+	with open('high_scores.csv', 'r') as file:
+		csv_reader = reader(file)
+		return list(csv_reader)
+
+
+
+def show_high_scores(csv_list):
+	'''Sorts list of lists by first column and prints out table'''
+	# seperate header so can sort the scores
+	headers, scores = csv_list[0], csv_list[1:]
+
+	# sort by first item in list (guesses)
+	
+	scores = sorted(scores, key=lambda row: row[0])
+
+	result = [headers] + scores
+
+	print()
+	print(tabulate(result, headers='firstrow', numalign='left'))
+	# print()
 
 
 # ======================================== PLay Game ============================================
 # one little hacky fix here. probably bad practice
-# I didn't want to have to pass these into every single call color_print()
+# I didn't want to have to pass these into every single call to color_print()
 num_flag_colors = 0
 flag_colors = []
 
 
 def play_game():
+	'''Plays the quiz game (main menu option [1])'''
+
 	global num_flag_colors, flag_colors
+
+	start_time = time()
 
 	answer_country = choice(countries) # pick random country
 	# answer_country = 'France'
 
 	print()
-	print(answer_country, '\n')
+	if is_testing:
+		print(answer_country, '\n')
 
-	info = scrape_country_info(answer_country)
+	info = scrape_country_info(answer_country) 
 	# print(country_info)
 
 	flag_colors = get_flag_colors(answer_country)
@@ -262,20 +298,23 @@ def play_game():
 		# get guess from user
 		guess = input("Guess the country: ")
 		print()
+		
+		guesses_remaining -= 1
 
 		if guess == answer_country:
-			color_print("You win!")
+			color_print("Goooooooooaaaal!!!")
+			color_print("Well done! Your number of guesses, total time taken, and country have been added to the high scores.")
 			print()
 
-			elapsed_time = round(time() - start_time, 2)
+			time_taken = round(time() - start_time, 2)
 
-			write_to_high_scores(guesses_remaining, answer_country, elapsed_time)
+			num_guesses = starting_guesses - guesses_remaining
+			write_to_high_scores(num_guesses, time_taken, answer_country)
 
 			break
 
 
 
-		guesses_remaining -= 1
 
 	if guesses_remaining == 0:
 		color_print(f'Sorry you ran out of guesses. The correct country was {answer_country}.\n')
@@ -295,25 +334,7 @@ def play_game():
 
 
 
-def get_high_scores():
-	with open('high_scores.csv', 'r') as file:
-		csv_reader = reader(file)
-		return list(csv_reader)
 
-
-def show_high_scores(csv_list):
-	# seperate header so can sort the scores
-	headers, scores = csv_list[0], csv_list[1:]
-
-	# sort by first item in list (guesses)
-	
-	scores = sorted(scores, key=lambda row: row[0], reverse=True)
-
-	result = [headers] + scores
-
-	print()
-	print(tabulate(result, headers='firstrow', numalign='left'))
-	print()
 	
 
 
@@ -323,22 +344,22 @@ def show_high_scores(csv_list):
 
 
 def color_print(text):
-	num_colors = num_flag_colors
-	colors_list = flag_colors
+	# num_flag_colors = num_flag_colors
+	# flag_colors = flag_colors
 
-	# print(num_colors)
-	# print(colors_list)
+	# print(num_flag_colors)
+	# print(flag_colors)
 
-	if num_colors == 0:
+	if num_flag_colors == 0:
 		print(text)
 	else:
 		colored_words_list = []
 
 		for index, word in enumerate(text.split()):
 		
-			i = ((index + 1) % num_colors)
+			i = ((index + 1) % num_flag_colors)
 			i = 0 if i < 0 else i # make sure it's not below 0
-			hex = colors_list[i]
+			hex = flag_colors[i]
 
 			colored_word = color(word, fore=hex)
 			colored_words_list.append(colored_word)
@@ -368,14 +389,23 @@ def start():
 	options = [
 		'[1] Play Quiz',
 		'[2] Show High Scores', 
-		# '[3] Show Quiz Instructions',
+		'[3] Show Quiz Instructions',
 		'[4] Show List of Countries',
 		'[q] Quit',
 		''
 	]
 	[print(option) for option in options] # print out each option on a new line
 
-	menu_choice = input('> ')
+	
+	
+	# protect against invalid inputs
+	possible_choices = ('1', '2', '3', '4', 'q', 'Q')
+
+	menu_choice = ''
+	while menu_choice not in possible_choices:
+		menu_choice = input('> ')
+
+
 
 
 	match menu_choice:
@@ -384,15 +414,50 @@ def start():
 		case '2':
 			scores = get_high_scores()
 			show_high_scores(scores)
+			start() # restart application
+		case '3':
+			print('''
+Welcome to the world cup country quiz game!
+
+You have 6 tries to guess the country. 
+
+Each try you can choose from 3 different types of hints.
+
+[1] Random Sentence
+A random sentence scraped from the first 2 paragraphs of the country's wikipedia page.
+The name of the country has been redacted.
+
+[2] Fact
+A fact scraped from the country's Wikipedia page.
+The order of the facts given is always the same.
+Anthem -> Leader -> Currency -> Capital
+
+[3] Flag color text
+Each time chosen, remaining hint text will be colored an additional color of the country's flag.
+
+Good luck!
+			''')
+			start() # restart application
 		case '4':
 			print()
-			[print(country) for country in sorted(countries)]
+			[print(country) for country in sorted(countries)] # print sorted list
 			start() # restart application
 		case 'q' | 'Q':
-			print("\nBye!\n")
+			# print("\nBye!\n")
+			print()
 			quit()
 
 
 
+
+def check_for_testing_flag():
+	return '--testing' in sys.argv
+
+
+
+
 if __name__ == '__main__':
+
+	is_testing = check_for_testing_flag()
+
 	start()
