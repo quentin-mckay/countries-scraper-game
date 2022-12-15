@@ -21,7 +21,13 @@ def random_color():
 
 # print(random_color())
 
+text = "Welcome"
 
+def rainbow(string):
+	return ''.join([color(letter, fore=random_color()) for letter in string])
+
+def rainbow_print(string):
+	print(rainbow(string))
 # ============================== regex cleaning functions ==============================
 
 def filter_country_name(string, country_name, replacement=''):
@@ -245,6 +251,7 @@ def play_game():
 
 
 		match hint_option:
+			
 			# Random Sentence
 			case '1':
 				combined = info['first paragraph'] + info['second paragraph']
@@ -259,6 +266,7 @@ def play_game():
 				color_print("Here's a random sentence:")
 				print()
 				color_print(sentence + '.')
+				print()
 
 			# Fact
 			case '2':
@@ -280,9 +288,14 @@ def play_game():
 					color_print(f"The country's capital is {info['capital']}.")
 				elif facts_remaining == 0:
 					color_print('Sorry, there are no new facts. Please choose another hint type.\n')
+					print()
 					continue
 
+				print()
+
 				facts_remaining -= 1
+
+			# flag color text
 			case '3':
 				if num_flag_colors == len(flag_colors):
 					color_print("Maximum flag colors reached. Please choose another hint type.")
@@ -290,20 +303,23 @@ def play_game():
 					continue
 				else:
 					num_flag_colors += 1
-					guesses_remaining -=1
-					continue
+					# guesses_remaining -=1
+					# continue
 
-		print()
+		# print()
 
 		# get guess from user
-		guess = input("Guess the country: ")
+		guess = input(color_text("Guess the country:", ending=' '))
 		print()
-		
+
 		guesses_remaining -= 1
 
 		if guess == answer_country:
-			color_print("Goooooooooaaaal!!!")
-			color_print("Well done! Your number of guesses, total time taken, and country have been added to the high scores.")
+			print("Hooray! You win!")
+			print()
+			print("Your number of guesses, total time taken, and country have been added to the high scores.")
+			print()
+			print("Don't forget to email student services to redeem your all-expenses paid trip to World Cup 2026 courtesy of Coder Academy.")
 			print()
 
 			time_taken = round(time() - start_time, 2)
@@ -339,22 +355,12 @@ def play_game():
 
 
 
-
-
-
-
-def color_print(text):
-	# num_flag_colors = num_flag_colors
-	# flag_colors = flag_colors
-
-	# print(num_flag_colors)
-	# print(flag_colors)
+def color_text(text, ending=''):
+	colored_words_list = []
 
 	if num_flag_colors == 0:
-		print(text)
+		output = text + ending
 	else:
-		colored_words_list = []
-
 		for index, word in enumerate(text.split()):
 		
 			i = ((index + 1) % num_flag_colors)
@@ -364,8 +370,16 @@ def color_print(text):
 			colored_word = color(word, fore=hex)
 			colored_words_list.append(colored_word)
 
-		output = ' '.join(colored_words_list)
-		print(output)
+		output = ' '.join(colored_words_list) + ending
+
+	return output
+
+
+def color_print(text):
+	if num_flag_colors == 0:
+		print(text)
+	else:
+		print(color_text(text))
 
 
 
@@ -383,7 +397,7 @@ def start():
 	# color_print('hello this is a random sentence of lots of words', num_flag_colors, flag_colors)
 	
 
-	print('\n--- Welcome to the World Cup Country Quiz Game ---\n')
+	rainbow_print('\n--- Welcome to the World Cup Country Quiz Game ---\n')
 	print('Please select an option:\n')
 
 	options = [
@@ -419,9 +433,11 @@ def start():
 			print('''
 Welcome to the world cup country quiz game!
 
-You have 6 tries to guess the country. 
+The goal is to guess the country randomly selected from the 32 participanting nations of the 2022 World Cup. 
 
-Each try you can choose from 3 different types of hints.
+You have 6 guesses.
+
+Before each guess you can choose from 3 different types of hints.
 
 [1] Random Sentence
 A random sentence scraped from the first 2 paragraphs of the country's wikipedia page.
@@ -460,4 +476,7 @@ if __name__ == '__main__':
 
 	is_testing = check_for_testing_flag()
 
-	start()
+	try:
+		start()
+	except KeyboardInterrupt:
+		print("\n\nGoodbye!")
