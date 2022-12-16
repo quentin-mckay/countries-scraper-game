@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 # check if system has python
 if ! [[ -x "$(command -v python)" ]]
 then
@@ -10,6 +8,12 @@ then
     To install Python, check out https://installpython3.com/' >&2
 	exit 1
 fi
+
+# start virtual environment
+source venv/Scripts/activate
+
+# install dependencies
+# pip install -r requirements.txt
 
 # check for different operating systems
 if [[ $OSTYPE == 'darwin'* ]]

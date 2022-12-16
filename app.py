@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import os
-from random import choice, randint
+from random import choice, randint, random
 from countries import countries # list of 32 countries
 from colr import color
 import json
@@ -11,24 +11,11 @@ from time import time
 from pprint import pp
 from tabulate import tabulate
 import sys
-
-
+import pyfiglet
+from time import sleep
 
 os.system('clear')
 
-
-
-# ============================== rainbow print ==============================
-def random_color():
-	return (randint(0, 255), randint(0, 255), randint(0, 255))
-
-
-def rainbow(string):
-	return ''.join([color(letter, fore=random_color()) for letter in string])
-
-
-def rainbow_print(string):
-	print(rainbow(string))
 
 # ============================== regex cleaning functions ==============================
 
@@ -204,8 +191,8 @@ def play_game():
 
 	print()
 
-	# print answer country if command line --testing flag is present 
-	if is_testing:
+	# print answer country if command line --show-country flag is present 
+	if show_country:
 		print(answer_country, '\n')
 
 	info = scrape_country_info(answer_country) 
@@ -345,7 +332,21 @@ def play_game():
 		# print("\nThank's for playing! Bye!\n")
 		start()
 	
-		
+
+# ============================== rainbow print ==============================
+def random_color():
+		return (randint(0, 255), randint(0, 255), randint(0, 255))
+
+
+def rainbow(string):
+		return ''.join([color(letter, fore=random_color()) for letter in string])
+
+
+def rainbow_print(string, end='\n'):
+	print(rainbow(string), end='\r')
+
+
+
 
 def color_text(text, ending=''):
 	'''Colors each word of text. Optional ending string.'''
@@ -371,20 +372,83 @@ def color_text(text, ending=''):
 
 
 
-def color_print(text):
+def color_print(text, end='\n'):
 	'''Wrapper over print() to color the text'''
 
 	if num_flag_colors == 0:
-		print(text)
+		print(text, end)
 	else:
-		print(color_text(text))
+		print(color_text(text), end=end)
+
+
+
+def slow_print(string):
+	for i, letter in enumerate(string):
+		print(string[0:i+1], sep='', end='\r')
+		sleep(0.15)
+		# os.system('clear')
+		
+
+
+def flash_print(string, replacement_color=128):
+	for _ in range(20):
+		new_string = ''
+		for letter in string:
+			if random() < 0.25:
+				# char = color(letter, back=255)
+				char = letter
+			else:
+				char = letter
+			new_string += char
+
+		# print(new_string, end='\r')
+
+		# result = pyfiglet.figlet_format(new_string)
+		# rainbow_print(result, end='\r')
+
+		print(rainbow(new_string), end='\r')
+		# rainbow_print(new_string, end='\r')
+
+		sleep(0.15)
+
+def intro_display():
+	if no_intro:
+		rainbow_print('===== Welcome to the World Cup Country Quiz Game =====\n')
+		print()
+	else:
+		slow_print('Welcome')
+		sleep(0.5)
+		os.system('clear')
+
+		slow_print('to')
+		sleep(0.5)
+		os.system('clear')
+
+		slow_print('the')
+		sleep(0.5)
+		os.system('clear')
+
+		sleep(1.5)
+
+
+		flash_print('===== World Cup Country Quiz Game =====')
+		print()
+		print()
+		# flash_print(result)
+	
 
 
 
 def start():
 	'''Application Start and Main Menu'''
 
-	rainbow_print('\n--- Welcome to the World Cup Country Quiz Game ---\n')
+	# result = pyfiglet.figlet_format("Welcome")
+	# rainbow_print(result)
+
+	intro_display()
+	
+
+	# rainbow_print('\n--- Welcome to the World Cup Country Quiz Game ---\n')
 	print('Please select an option:\n')
 
 	options = [
@@ -458,7 +522,8 @@ def check_for_testing_flag():
 
 if __name__ == '__main__':
 
-	is_testing = check_for_testing_flag()
+	show_country = '--show-country' in sys.argv
+	no_intro = '--no-intro' in sys.argv
 
 	try:
 		start()
