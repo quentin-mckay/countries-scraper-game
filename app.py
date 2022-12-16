@@ -12,22 +12,24 @@ from pprint import pp
 from tabulate import tabulate
 import sys
 
+
+
 os.system('clear')
 
 
 
+# ============================== rainbow print ==============================
 def random_color():
 	return (randint(0, 255), randint(0, 255), randint(0, 255))
 
-# print(random_color())
-
-text = "Welcome"
 
 def rainbow(string):
 	return ''.join([color(letter, fore=random_color()) for letter in string])
 
+
 def rainbow_print(string):
 	print(rainbow(string))
+
 # ============================== regex cleaning functions ==============================
 
 def filter_country_name(string, country_name, replacement=''):
@@ -137,15 +139,6 @@ def scrape_country_info(country):
 
 
 
-
-
-
-
-
-
-
-
-
 def get_flag_colors(country):
 	'''Reads flag_colors.json and returns a list of color hex values'''
 
@@ -153,8 +146,6 @@ def get_flag_colors(country):
 		flag_colors_dict = json.load(file)
 
 	return flag_colors_dict[country]
-
-
 
 
 
@@ -190,7 +181,7 @@ def show_high_scores(csv_list):
 
 	print()
 	print(tabulate(result, headers='firstrow', numalign='left'))
-	# print()
+
 
 
 # ======================================== PLay Game ============================================
@@ -335,8 +326,6 @@ def play_game():
 			break
 
 
-
-
 	if guesses_remaining == 0:
 		color_print(f'Sorry you ran out of guesses. The correct country was {answer_country}.\n')
 
@@ -352,18 +341,12 @@ def play_game():
 	
 		
 
-
-
-
-
-
-	
-
-
-
 def color_text(text, ending=''):
+	'''Colors each word of text. Optional ending string.'''
+
 	colored_words_list = []
 
+	# don't color if user hasn't select Flag Color hint
 	if num_flag_colors == 0:
 		output = text + ending
 	else:
@@ -381,7 +364,10 @@ def color_text(text, ending=''):
 	return output
 
 
+
 def color_print(text):
+	'''Wrapper over print() to color the text'''
+
 	if num_flag_colors == 0:
 		print(text)
 	else:
@@ -389,19 +375,8 @@ def color_print(text):
 
 
 
-
-
-
-
-
 def start():
-
-
-	# num_flag_colors = 3
-	# flag_colors = ['ff0000', '00ff00', '0000ff']
-
-	# color_print('hello this is a random sentence of lots of words', num_flag_colors, flag_colors)
-	
+	'''Application Start and Main Menu'''
 
 	rainbow_print('\n--- Welcome to the World Cup Country Quiz Game ---\n')
 	print('Please select an option:\n')
@@ -415,7 +390,6 @@ def start():
 		''
 	]
 	[print(option) for option in options] # print out each option on a new line
-
 	
 	
 	# protect against invalid inputs
@@ -424,8 +398,6 @@ def start():
 	menu_choice = ''
 	while menu_choice not in possible_choices:
 		menu_choice = input('> ')
-
-
 
 
 	match menu_choice:
@@ -473,8 +445,8 @@ Good luck!
 
 
 def check_for_testing_flag():
+	'''Checks if --testing flag is in command-line arguments. Returns boolean.'''
 	return '--testing' in sys.argv
-
 
 
 
@@ -484,5 +456,5 @@ if __name__ == '__main__':
 
 	try:
 		start()
-	except KeyboardInterrupt:
+	except KeyboardInterrupt: # gracefully handle ctrl+c or ctrl+z
 		print("\n\nGoodbye!")

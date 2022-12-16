@@ -8,6 +8,14 @@ High scores are recorded to a CSV file and can displayed in a pretty-printed tab
 
 The code follows the styling conventions outlined in [PEP 8](https://peps.python.org/pep-0008/)
 
+
+## Installation and Usage
+
+Requires Python 3.10 or later
+
+`chmod +ux launcher.sh`
+
+
 ## Features
 
 ### Web-Scraping Wikipedia
@@ -44,6 +52,11 @@ The main menu provides multiple options with varying functionality and gives the
 
 
 
+
+
+
+
+
 ## Implementation Plan
 
 The implementation plan was carried out using Trello.
@@ -59,11 +72,3 @@ The implementation plan was carried out using Trello.
 ![progress 2](./images/trello-progress-2.jpg)
 
 ![progress 3](./images/trello-progress-3.jpg)
-
-
-### Installation and Usage
-
-Requires Python 3.10 or later
-
-`chmod +ux launcher.sh`
-
