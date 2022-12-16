@@ -203,6 +203,8 @@ def play_game():
 	# answer_country = 'France'
 
 	print()
+
+	# print answer country if command line --testing flag is present 
 	if is_testing:
 		print(answer_country, '\n')
 
@@ -237,9 +239,12 @@ def play_game():
 		[color_print(option) for option in options]
 
 
-		# hint_option = ''
-		# while hint_option not in ('1', '2', '3'):
-		hint_option = input('> ')
+		# get user choice
+		possible_choices = ('1', '2', '3', 'q', 'Q')
+		hint_option = ''
+		while hint_option not in possible_choices:
+			hint_option = input('> ')
+
 		print()
 
 
