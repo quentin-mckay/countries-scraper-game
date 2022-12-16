@@ -49,11 +49,12 @@ def filter_country_name(string, country_name, replacement=''):
 def remove_footnotes_and_parens(string):
 	# match either (.....) or [.....]
 	# note: uses non-greedy capture modifier and
-	regex = re.compile(r'\[.*?\]|\(.*?\)\)*')
-	return regex.sub('', string)
+	regex = re.compile(r'\[.*?\]|\(.*?\)\)* ')
+	return regex.sub('', string) # remove match
 
 
 def clean_text(text, country):
+	'''Replace country name with _ and remove footnotes and parens'''
 	text = filter_country_name(text, country, replacement='_')
 	text = remove_footnotes_and_parens(text)
 	return text
