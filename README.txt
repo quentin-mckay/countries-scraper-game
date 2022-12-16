@@ -1,2 +1,0 @@
-# Countries Scraper Game
-

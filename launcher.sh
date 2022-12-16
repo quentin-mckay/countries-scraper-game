@@ -1,5 +1,8 @@
 #!/bin/bash
 
+
+
+# check if system has python
 if ! [[ -x "$(command -v python)" ]]
 then
 	echo 'Error
@@ -8,4 +11,23 @@ then
 	exit 1
 fi
 
-python app.py $1
+# check for different operating systems
+if [[ $OSTYPE == 'darwin'* ]]
+then
+	# echo 'macOS'
+	python3 app.py $1
+fi
+
+if [[ $OSTYPE == 'linux'* ]]
+then
+	# echo 'linux'
+	python app.py $1
+fi
+
+if [[ $OSTYPE == 'msys'* ]]
+then
+	# echo 'windows'
+	py app.py $1
+fi
+
+

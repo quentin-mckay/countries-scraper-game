@@ -17,7 +17,7 @@ os.system('clear')
 
 
 def random_color():
-	return (randint(0, 256), randint(0, 256), randint(0, 256))
+	return (randint(0, 255), randint(0, 255), randint(0, 255))
 
 # print(random_color())
 
@@ -239,6 +239,7 @@ def play_game():
 				'[1] Random sentence',
 				'[2] Fact',
 				'[3] Flag color text',
+				'[q] Quit Game',
 				''
 			]
 		[color_print(option) for option in options]
@@ -272,6 +273,8 @@ def play_game():
 			case '2':
 				# anthem
 				if facts_remaining == 4:
+					if not info['anthem']:
+						continue
 					anthem = clean_text(info['anthem'], answer_country)
 					color_print(f"The national anthem of the country is {anthem}.")
 				# leader
@@ -305,7 +308,9 @@ def play_game():
 					num_flag_colors += 1
 					# guesses_remaining -=1
 					# continue
-
+			case ('q' | 'Q'):
+				# print()
+				break
 		# print()
 
 		# get guess from user
@@ -342,7 +347,8 @@ def play_game():
 	if again in ('yes', 'y'):
 		return play_game() # return ends execution of the function
 	else:
-		print("\nThank's for playing! Bye!\n")
+		# print("\nThank's for playing! Bye!\n")
+		start()
 	
 		
 
@@ -459,8 +465,8 @@ Good luck!
 			[print(country) for country in sorted(countries)] # print sorted list
 			start() # restart application
 		case 'q' | 'Q':
-			# print("\nBye!\n")
-			print()
+			print("\nGoodbye!\n")
+			# print()
 			quit()
 
 
