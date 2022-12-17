@@ -179,6 +179,7 @@ def show_high_scores(csv_list):
 num_flag_colors = 0
 flag_colors = []
 
+first_time_at_main_menu = True
 
 def play_game():
 	'''Plays the quiz game (main menu option [1])'''
@@ -258,8 +259,8 @@ def play_game():
 			case '2':
 				# anthem
 				if facts_remaining == 4:
-					if not info['anthem']:
-						continue
+					# if not info['anthem']:
+					# 	continue
 					anthem = clean_text(info['anthem'], answer_country)
 					color_print(f"The national anthem of the country is {anthem}.")
 				# leader
@@ -331,6 +332,7 @@ def play_game():
 		return play_game() # return ends execution of the function
 	else:
 		# print("\nThank's for playing! Bye!\n")
+		print()
 		start()
 	
 
@@ -377,7 +379,7 @@ def color_print(text, end='\n'):
 	'''Wrapper over print() to color the text'''
 
 	if num_flag_colors == 0:
-		print(text, end)
+		print(text)
 	else:
 		print(color_text(text), end=end)
 
@@ -392,7 +394,7 @@ def slow_print(string):
 
 
 def flash_print(string, replacement_color=128):
-	for _ in range(20):
+	for _ in range(30):
 		new_string = ''
 		for letter in string:
 			if random() < 0.25:
@@ -410,7 +412,9 @@ def flash_print(string, replacement_color=128):
 		print(rainbow(new_string), end='\r')
 		# rainbow_print(new_string, end='\r')
 
-		sleep(0.15)
+		sleep(0.1)
+
+
 
 def intro_display():
 	if no_intro:
@@ -418,11 +422,11 @@ def intro_display():
 		print()
 	else:
 		slow_print('Welcome')
-		sleep(0.5)
+		sleep(0.8)
 		os.system('clear')
 
 		slow_print('to')
-		sleep(0.5)
+		sleep(0.3)
 		os.system('clear')
 
 		slow_print('the')
@@ -445,8 +449,12 @@ def start():
 
 	# result = pyfiglet.figlet_format("Welcome")
 	# rainbow_print(result)
+	global first_time_at_main_menu
 
-	intro_display()
+	if first_time_at_main_menu:
+		intro_display()
+
+	first_time_at_main_menu = False
 	
 
 	# rainbow_print('\n--- Welcome to the World Cup Country Quiz Game ---\n')
@@ -526,7 +534,8 @@ if __name__ == '__main__':
 	show_country = '--show-country' in sys.argv
 	no_intro = '--no-intro' in sys.argv
 
-	print(sys.argv)
+	first_time_at_main_menu = True
+	# print(sys.argv)
 
 	try:
 		start()
