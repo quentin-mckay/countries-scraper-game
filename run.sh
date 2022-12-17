@@ -19,19 +19,19 @@ source venv/Scripts/activate
 if [[ $OSTYPE == 'darwin'* ]]
 then
 	# echo 'macOS'
-	python3 app.py $1
+	python3 app.py $1 $2
 fi
 
 if [[ $OSTYPE == 'linux'* ]]
 then
 	# echo 'linux'
-	python app.py $1
+	python app.py $1 $2
 fi
 
 if [[ $OSTYPE == 'msys'* ]]
 then
 	# echo 'windows'
-	py app.py $1
+	py app.py $1 $2
 fi
 
 

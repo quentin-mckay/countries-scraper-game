@@ -16,6 +16,7 @@ from time import sleep
 
 os.system('clear')
 
+# no_intro = True
 
 # ============================== regex cleaning functions ==============================
 
@@ -524,6 +525,8 @@ if __name__ == '__main__':
 
 	show_country = '--show-country' in sys.argv
 	no_intro = '--no-intro' in sys.argv
+
+	print(sys.argv)
 
 	try:
 		start()
