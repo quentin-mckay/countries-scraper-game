@@ -531,11 +531,17 @@ def check_for_testing_flag():
 
 if __name__ == '__main__':
 
-	show_country = '--show-country' in sys.argv
-	no_intro = '--no-intro' in sys.argv
+	show_country = '--show-country' in sys.argv # for displaying correct answer
+	no_intro = '--no-intro' in sys.argv # for skipping the intro animation
 
-	first_time_at_main_menu = True
-	# print(sys.argv)
+	first_time_at_main_menu = True # for only running the intro animation once
+
+	# exit if using Python version less than 3.10
+	if sys.version_info[1] < 10:
+		print("Sorry, this program requires Python version 3.10 or later to run.")
+		print()
+		sys.exit()
+
 
 	try:
 		start()

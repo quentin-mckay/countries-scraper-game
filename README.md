@@ -11,10 +11,19 @@ The code follows the styling conventions outlined in [PEP 8](https://peps.python
 
 ## Installation and Usage
 
-Requires Python 3.10 or later
 
-`chmod +ux launcher.sh`
+1. Run `chmod +ux run_app.sh` to make the bash script executable
 
+2. Run `./run_app.sh` to launch the application
+
+Two command line options are available:
+1. `--show-country` will display the correct answer at the beginning of each game. Useful for testing and debugging.
+
+2. `--no-intro` will skip the intro animation. Useful wehn testing the application so you don't have to sit through the unnecessary (albeit short) animation.
+
+Example usage with both flags: `./run_app --show-country --no-intro`
+
+Note: The application uses the `match case` statement so requires Python version 3.10 or later.
 
 ## Features
 
