@@ -13,7 +13,7 @@ fi
 source venv/Scripts/activate
 
 # install dependencies
-# pip install -r requirements.txt
+pip install -r requirements.txt
 
 # check for different operating systems
 if [[ $OSTYPE == 'darwin'* ]]

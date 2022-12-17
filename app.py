@@ -11,7 +11,7 @@ from time import time
 from pprint import pp
 from tabulate import tabulate
 import sys
-import pyfiglet
+# import pyfiglet
 from time import sleep
 
 os.system('clear')
@@ -350,7 +350,6 @@ def rainbow_print(string, end='\n'):
 
 
 
-
 def color_text(text, ending=''):
 	'''Colors each word of text. Optional ending string.'''
 
@@ -426,7 +425,7 @@ def intro_display():
 		os.system('clear')
 
 		slow_print('to')
-		sleep(0.3)
+		sleep(0.25)
 		os.system('clear')
 
 		slow_print('the')
@@ -485,12 +484,13 @@ def start():
 		case '2':
 			scores = get_high_scores()
 			show_high_scores(scores)
+			print(0)
 			start() # restart application
 		case '3':
 			print('''
 Welcome to the world cup country quiz game!
 
-The goal is to guess the country randomly selected from the 32 participanting nations of the 2022 World Cup. 
+The goal is to guess the country. The country is randomly selected from the 32 participanting nations of the 2022 World Cup. 
 
 You have 6 guesses.
 
@@ -514,6 +514,7 @@ Good luck!
 		case '4':
 			print()
 			[print(country) for country in sorted(countries)] # print sorted list
+			print()
 			start() # restart application
 		case 'q' | 'Q':
 			print("\nGoodbye!\n")

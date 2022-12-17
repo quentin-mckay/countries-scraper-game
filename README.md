@@ -23,47 +23,61 @@ Two command line options are available:
 
 Example usage with both flags: `./run_app --show-country --no-intro`
 
-Note: The application uses the `match case` statement so requires Python version 3.10 or later.
+Note: The application uses the `match case` statement and will exit if run with any version of Python less than 3.10.
 
 ## Features
 
-### Web-Scraping Wikipedia
+### Main Menu
 
-The quiz selects a random country from the 32 nations in the 2022 world cup and then uses the [BeautifulSoup](https://pypi.org/project/beautifulsoup4/) library to scrape information from that country's Wikipedia page.
+![main menu](./images/main-menu.jpg)
 
-Each piece of data was it's own challenge, with the scraping method needing to be tweaked so as to accomodate varying oddities in both the HTML structure and particular country's available information.
+The main menu provides multiple options with varying functionality and gives the user the option to quit.
+
+
+### Hint Menu
+
+![hint menu](./images/hint-menu.jpg)
+
+The quiz game provides a hint system which lets the user pick a hint each turn before they guess the country.
+
+### Hint - Wikipedia Random Sentence
+
+![random sentence](./images/random-sentence.jpg)
+
+A random sentence is scraped from the first 2 paragraphs of the country's wikipedia page.
+
+### Hint - Wikipedia Facts
+
+![fact](./images/fact.jpg)
+
+A fact scraped from Wikipedia is given following a pre-defined order (anthem -> president -> currency -> capital)
+
+### Flag Color Text
+
+![color sentence](./images/color-sentence.jpg)
+
+![color hints](./images/flag-color-words.jpg)
+
+Each time "[3] Flag Color Text" is selected as a hint option, the words in the remaing hints are colored an additional color of the country's flag using the package [Colr](https://pypi.org/project/Colr/).  
+
 
 ### High Scores CSV File
+
+![high scores](./images/high-scores.jpg)
 
 Each time the user guesses correctly, their attempt is written to a csv file of "High Scores". Three pieces of data are written (number of guesses attempted, overall time taken (seconds) to complete the game, and the correctly guessed country)
 
 The user can also display the high scores by selecting the option from the main menu. The csv file is read, sorted by number of guesses, and pretty-printed using the [Tabulate](https://pypi.org/project/tabulate/) library for better readability.
 
-![high scores](./images/high-scores.jpg)
 
-### Flag Color Text
-
-Each time "[3] Flag Color Text" is selected as a hint option, the words in the remaing hints are colored an additional color of the country's flag using the package [Colr](https://pypi.org/project/Colr/).  
-
-![color sentence](./images/color-sentence.jpg)
 
 ### Flag Color Web-Scraping to JSON
+
+![flag color JSON](./images/flag-color-json.jpg)
 
 A separate script was written to scrape the flag color hex codes for all 32 countries from [FlagColorCodes.com](https://www.flagcolorcodes.com/). 
 
 The data was written into a JSON file and then read by the main application.
-
-### Main Menu and Quiz Game Loop
-
-The main menu provides multiple options with varying functionality and gives the user the option to quit.
-
-![main menu](./images/main-menu.jpg)
-
-
-
-
-
-
 
 
 ## Implementation Plan
