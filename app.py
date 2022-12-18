@@ -311,11 +311,15 @@ def play_game():
 		
 		
 		if guess == answer_country:
+			print(rainbow('*********************************************'))
 			print("Goooooooooal! Congratulations, you won!")
 			print()
-			print("Your number of guesses, total time taken, and country have been added to the high scores.")
+			print("Your total guesses, total time taken, and country have been added to the high scores.")
 			print()
 			print("Don't forget to email student services to redeem your all-expenses-paid trip to World Cup 2026 courtesy of Coder Academy.")
+			# rainbow_print('*********************************************')
+			print(rainbow('*********************************************'))
+
 			print()
 
 			time_taken = round(time() - start_time, 2)
