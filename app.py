@@ -12,13 +12,14 @@ from pprint import pp
 from tabulate import tabulate
 import sys
 from time import sleep
-# import pyfiglet
 
 os.system('clear')
 
 # ============================== regex cleaning functions ==============================
 
 def filter_country_name(string, country_name, replacement=''):
+	'''Replace every word that has either the beginning or end of country name with a replacement string'''
+
 	country_name = country_name.replace('_', ' ') # ex turn 'Saudi_Arabia' into 'Saudi Arabia'
 
 	start_name = country_name[:4] # slice the first 4 letters
@@ -33,6 +34,8 @@ def filter_country_name(string, country_name, replacement=''):
 
 
 def remove_footnotes_and_parens(string):
+	'''Remove footnotes and parentheses. Returns cleaned string'''
+
 	# match either (.....) or [.....]
 	# note: uses non-greedy capture modifier and
 	regex = re.compile(r'\[.*?\]|\(.*?\)\)* ')
@@ -41,6 +44,7 @@ def remove_footnotes_and_parens(string):
 
 def clean_text(text, country):
 	'''Replace country name with _ and remove footnotes and parens'''
+	
 	text = filter_country_name(text, country, replacement='_')
 	text = remove_footnotes_and_parens(text)
 	return text
@@ -71,8 +75,6 @@ def scrape_country_info(country):
 		last_few = strings_list[-3:] # anthem is always in one of the last few spots
 		anthem = [s for s in last_few if len(s) > 5][-1] # find the one that's not a punctuation
 
-		# print()
-		# print(list(strings_list))
 	except IndexError: # for some reason Denmark is different to every other country
 		# print('no anthem')
 		pass
@@ -91,7 +93,6 @@ def scrape_country_info(country):
 		# print(strings)
 
 		if strings:
-
 			if strings[0] == 'Capital':
 				td = th_tag.find_next_sibling('td') # find corresponding <td>
 				capital = td.find('a').string # get string of first <a> in the <td>
@@ -128,6 +129,8 @@ def get_flag_colors(country):
 
 
 def write_to_high_scores(guesses_remaining, elapsed_time, country):
+	'''Adds new row of data to high_scores.csv'''
+
 	with open('high_scores.csv', 'a', newline='') as file:
 		headers = ['Guesses', 'Time Taken','Country']
 		csv_writer = DictWriter(file, fieldnames=headers)
@@ -140,6 +143,7 @@ def write_to_high_scores(guesses_remaining, elapsed_time, country):
 
 def get_high_scores():
 	'''Reads high_scores.csv and returns list of all rows'''
+
 	with open('high_scores.csv', 'r') as file:
 		csv_reader = reader(file)
 		return list(csv_reader)
@@ -148,11 +152,11 @@ def get_high_scores():
 
 def show_high_scores(csv_list):
 	'''Sorts list of lists by first column and prints out table'''
+
 	# seperate header so can sort the scores
 	headers, scores = csv_list[0], csv_list[1:]
 
 	# sort by first item in list (guesses)
-	
 	scores = sorted(scores, key=lambda row: row[0])
 
 	result = [headers] + scores
@@ -162,7 +166,19 @@ def show_high_scores(csv_list):
 
 
 
-# ======================================== PLay Game ============================================
+
+def get_country_guess():
+	'''Get input from user. If user types 'show', display countries and ask again'''
+	guess = input(color_text("Guess the country:", ending=' '))
+	print()
+	
+	if guess == 'show':
+		show_countries()
+		get_country_guess() # call this same function again
+
+	return guess
+
+
 # one little hacky fix here. probably bad practice
 # I didn't want to have to pass these into every single call to color_print()
 num_flag_colors = 0
@@ -183,7 +199,7 @@ def play_game():
 
 	# print answer country if command line --show-country flag is present 
 	if show_country:
-		print(answer_country, '\n')
+		print(f"The correct answer is {answer_country}.\n")
 
 	info = scrape_country_info(answer_country)
 	# print(country_info)
@@ -286,26 +302,27 @@ def play_game():
 				break
 		# print()
 
-		# get guess from user
-		guess = input(color_text("Guess the country:", ending=' '))
-		print()
 
-		guesses_remaining -= 1
-
+		guess = get_country_guess()
+		
+		
 		if guess == answer_country:
-			print("Hooray! You win!")
+			print("Goooooooooal! Congratulations, you won!")
 			print()
 			print("Your number of guesses, total time taken, and country have been added to the high scores.")
 			print()
-			print("Don't forget to email student services to redeem your all-expenses paid trip to World Cup 2026 courtesy of Coder Academy.")
+			print("Don't forget to email student services to redeem your all-expenses-paid trip to World Cup 2026 courtesy of Coder Academy.")
 			print()
 
 			time_taken = round(time() - start_time, 2)
 
 			num_guesses = starting_guesses - guesses_remaining
-			write_to_high_scores(num_guesses, time_taken, answer_country)
+			write_to_high_scores(num_guesses+1, time_taken, answer_country)
 
 			break
+		else:
+			guesses_remaining -= 1
+		
 
 
 	if guesses_remaining == 0:
@@ -323,22 +340,27 @@ def play_game():
 		start()
 	
 
+
+
 # ============================== rainbow print ==============================
 def random_color():
+		'''Returns tuple of 3 random RGB values'''
 		return (randint(0, 255), randint(0, 255), randint(0, 255))
 
 
 def rainbow(string):
-		return ''.join([color(letter, fore=random_color()) for letter in string])
+	'''Return string of rainbow colored letters'''
+	return ''.join([color(letter, fore=random_color()) for letter in string])
 
 
 def rainbow_print(string, end='\n'):
+	'''Prints rainbow lettered string'''
 	print(rainbow(string), end='\r')
 
 
 
 def color_text(text, ending=''):
-	'''Colors each word of text. Optional ending string.'''
+	'''Colors each word of text. Optional ending string. Returns string'''
 
 	colored_words_list = []
 
@@ -372,6 +394,8 @@ def color_print(text, end='\n'):
 
 
 def slow_print(string):
+	'''Slowly print a string of text. Cursor stays at the beginning of the line'''
+
 	for i, letter in enumerate(string):
 		print(string[0:i+1], sep='', end='\r')
 		sleep(0.15)
@@ -379,6 +403,8 @@ def slow_print(string):
 
 
 def flash_print(string, replacement_color=128):
+	'''Animate a string with rainbow colors'''
+
 	for _ in range(30):
 		new_string = ''
 		for letter in string:
@@ -398,6 +424,8 @@ def flash_print(string, replacement_color=128):
 
 
 def intro_display():
+	'''Displays an animated intro message'''
+
 	if no_intro:
 		rainbow_print('===== Welcome to the World Cup Country Quiz Game =====\n')
 		print()
@@ -422,6 +450,12 @@ def intro_display():
 		print()
 		# flash_print(result)
 	
+def show_countries():
+	'''Print sorted list of countries'''
+
+	[print(country) for country in sorted(countries)] # print sorted list
+	print()
+
 
 def start():
 	'''Application Start and Main Menu'''
@@ -476,6 +510,8 @@ You have 6 guesses.
 
 Before each guess you can choose from 3 different types of hints.
 
+When prompted to guess the country, you can type "show" to display a sorted list of the 32 countries.
+
 [1] Random Sentence
 A random sentence scraped from the first 2 paragraphs of the country's wikipedia page.
 The name of the country has been redacted.
@@ -493,8 +529,7 @@ Good luck!
 			start() # restart application
 		case '4':
 			print()
-			[print(country) for country in sorted(countries)] # print sorted list
-			print()
+			show_countries()
 			start() # restart application
 		case 'q' | 'Q':
 			print("\nGoodbye!\n")
