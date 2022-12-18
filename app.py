@@ -201,7 +201,8 @@ def play_game():
 
 	# print answer country if command line --show-country flag is present 
 	if show_country:
-		print(f"The correct answer is {answer_country}.\n")
+		name = answer_country.replace('_', ' ')
+		print(f"The correct answer is {name}.\n")
 
 	info = scrape_country_info(answer_country)
 	# print(country_info)
@@ -320,7 +321,7 @@ def play_game():
 			time_taken = round(time() - start_time, 2)
 
 			num_guesses = starting_guesses - guesses_remaining
-			write_to_high_scores(num_guesses, time_taken, answer_country)
+			write_to_high_scores(num_guesses + 1, time_taken, answer_country)
 
 			break
 		else:
