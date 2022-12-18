@@ -15,6 +15,8 @@ from time import sleep
 
 os.system('clear')
 
+
+
 # ============================== regex cleaning functions ==============================
 
 def filter_country_name(string, country_name, replacement=''):
@@ -514,15 +516,15 @@ def start():
 			start() # restart application
 		case '3':
 			print('''
-Welcome to the world cup country quiz game!
+Welcome to the World Cup Country Quiz Game!
 
-The goal is to guess the country. The country is randomly selected from the 32 participanting nations of the 2022 World Cup. 
+The goal of the quiz is to guess the name of the country.
+
+The country is randomly selected from the 32 participating nations of the 2022 World Cup. 
 
 You have 6 guesses.
 
 Before each guess you can choose from 3 different types of hints.
-
-When prompted to guess the country, you can type "show" to display a sorted list of the 32 countries.
 
 [1] Random Sentence
 A random sentence scraped from the first 2 paragraphs of the country's wikipedia page.
@@ -535,6 +537,8 @@ Anthem -> Leader -> Currency -> Capital
 
 [3] Flag color text
 Each time chosen, remaining hint text will be colored an additional color of the country's flag.
+
+When prompted to guess the country, you can type "show" to display a list of the 32 countries.
 
 Good luck!
 			''')
