@@ -11,12 +11,10 @@ from time import time
 from pprint import pp
 from tabulate import tabulate
 import sys
-# import pyfiglet
 from time import sleep
+# import pyfiglet
 
 os.system('clear')
-
-# no_intro = True
 
 # ============================== regex cleaning functions ==============================
 
@@ -46,15 +44,11 @@ def clean_text(text, country):
 	text = filter_country_name(text, country, replacement='_')
 	text = remove_footnotes_and_parens(text)
 	return text
-
-# print(info_paragraph)
-# print(remove_footnotes_and_parens((info_paragraph)))
-# print(info_paragraph.split('.')[0]) 
-# print(choice(info_paragraph.split('.')))
 		
 
 def scrape_country_info(country):
 	'''Scrapes information and first two paragraphs from the country's Wikipedia page'''
+
 	info = {}
 
 	response = requests.get(f'https://en.wikipedia.org/wiki/{country}')
@@ -69,9 +63,6 @@ def scrape_country_info(country):
 	paragraph = p_tags[2].get_text() # get text from 1st <p>
 	info['second paragraph'] = clean_text(paragraph, country)
 
-
-
-	# ============================== Fill info dictionary ========================================
 	# ===== get anthem =====
 	anthem = ''
 	try:
@@ -90,11 +81,9 @@ def scrape_country_info(country):
 	info['anthem'] = anthem.replace('"', '') # get rid of quotes if needed
 
 
-
 	# ===== get table data =====
 	th_tags = soup.select('.vcard')[0].find_all('th') # get list <th>'s
 	# print(th_tags)
-
 
 	for th_tag in th_tags:
 
@@ -184,12 +173,11 @@ first_time_at_main_menu = True
 def play_game():
 	'''Plays the quiz game (main menu option [1])'''
 
-	global num_flag_colors, flag_colors
+	global num_flag_colors, flag_colors # global for ease of use. bad practice
 
-	start_time = time()
+	start_time = time() # save starting time for testing against stopping time later
 
 	answer_country = choice(countries) # pick random country
-	# answer_country = 'France'
 
 	print()
 
@@ -197,17 +185,17 @@ def play_game():
 	if show_country:
 		print(answer_country, '\n')
 
-	info = scrape_country_info(answer_country) 
+	info = scrape_country_info(answer_country)
 	# print(country_info)
 
 	flag_colors = get_flag_colors(answer_country)
 	# print(flag_colors)
 	num_flag_colors = 0
 
-
+	# ===== intialize game state ====
 	starting_guesses = 6
 	guesses_remaining = starting_guesses
-	facts_remaining = 4
+	facts_remaining = 4 # counter to keep track of which fact to display next
 
 
 	# main hints loop
@@ -228,7 +216,7 @@ def play_game():
 		[color_print(option) for option in options]
 
 
-		# get user choice
+		# get user choice (keep prompting until acceptable choice is made)
 		possible_choices = ('1', '2', '3', 'q', 'Q')
 		hint_option = ''
 		while hint_option not in possible_choices:
@@ -238,7 +226,6 @@ def play_game():
 
 
 		match hint_option:
-			
 			# Random Sentence
 			case '1':
 				combined = info['first paragraph'] + info['second paragraph']
@@ -389,7 +376,6 @@ def slow_print(string):
 		print(string[0:i+1], sep='', end='\r')
 		sleep(0.15)
 		# os.system('clear')
-		
 
 
 def flash_print(string, replacement_color=128):
@@ -403,16 +389,12 @@ def flash_print(string, replacement_color=128):
 				char = letter
 			new_string += char
 
-		# print(new_string, end='\r')
-
 		# result = pyfiglet.figlet_format(new_string)
 		# rainbow_print(result, end='\r')
 
 		print(rainbow(new_string), end='\r')
-		# rainbow_print(new_string, end='\r')
 
 		sleep(0.1)
-
 
 
 def intro_display():
@@ -440,8 +422,6 @@ def intro_display():
 		print()
 		# flash_print(result)
 	
-
-
 
 def start():
 	'''Application Start and Main Menu'''
@@ -523,7 +503,6 @@ Good luck!
 
 
 
-
 def check_for_testing_flag():
 	'''Checks if --testing flag is in command-line arguments. Returns boolean.'''
 	return '--testing' in sys.argv
@@ -542,7 +521,6 @@ if __name__ == '__main__':
 		print("Sorry, this program requires Python version 3.10 or later to run.")
 		print()
 		sys.exit()
-
 
 	try:
 		start()

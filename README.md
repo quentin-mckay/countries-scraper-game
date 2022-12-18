@@ -95,3 +95,17 @@ The implementation plan was carried out using Trello.
 ![progress 2](./images/trello-progress-2.jpg)
 
 ![progress 3](./images/trello-progress-3.jpg)
+
+## Testing Procedure
+
+I used a combination of automated testing (using pytest) and manual testing. 
+
+As most of the application flow is based on user input, the pytests test are unit tests on isolated functionality. 
+
+1. Testing `get_flag_colors()` return the correct hex codes
+2. Testing `filter_country_name()` correctly replaces the country name in the input string
+3. Testing `scrape_country_info()` correctly returns a dictionary with correct length and values for given keys.
+
+Also included in the /docs is a pdf of the manual tests.
+
+![manual tests](./images/manual-tests.jpg)

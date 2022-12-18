@@ -1,6 +1,6 @@
 from app import filter_country_name
 
-
+#test filter_country_name() correctly replaces name of country in string
 def test_filter_country_name():
     assert filter_country_name('Japanese Yen', 'Japan', '_') == '_ Yen'
 
