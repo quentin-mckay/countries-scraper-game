@@ -6,20 +6,20 @@ High scores are recorded to a CSV file and can displayed in a pretty-printed tab
 
 [Click to view project GitHub repository](https://github.com/quentin-mckay/countries-scraper-game)
 
-The code follows the styling conventions outlined in [PEP 8](https://peps.python.org/pep-0008/)
+[Click to view Presentation video on YouTube](https://www.youtube.com/watch?v=jBaQAOYJ8Dc&ab_channel=QuentinMcKay)
 
+The code follows the styling conventions outlined in [PEP 8](https://peps.python.org/pep-0008/)
 
 ## Installation and Usage
 
+1. Run `chmod +x run.sh` to make the bash script executable
 
-1. Run `chmod +ux run_app.sh` to make the bash script executable
-
-2. Run `./run_app.sh` to launch the application
+2. Run `./run.sh` to launch the application
 
 Two command line options are available:
 1. `--show-country` will display the correct answer at the beginning of each game. Useful for testing and debugging.
 
-2. `--no-intro` will skip the intro animation. Useful wehn testing the application so you don't have to sit through the unnecessary (albeit short) animation.
+2. `--no-intro` will skip the intro animation. Useful when testing the application so you don't have to sit through the unnecessary (albeit short) animation.
 
 Example usage with both flags: `./run_app --show-country --no-intro`
 
