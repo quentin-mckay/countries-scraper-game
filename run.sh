@@ -10,28 +10,33 @@ then
 fi
 
 # start virtual environment
-source venv/Scripts/activate
 
 # install dependencies
-# pip install -r requirements.txt
 
 # check for different operating systems
 if [[ $OSTYPE == 'darwin'* ]]
 then
 	# echo 'macOS'
+	python3 -m venv venv
+	source venv/bin/activate
+	pip install -r requirements.txt
 	python3 app.py $1 $2
 fi
 
 if [[ $OSTYPE == 'linux'* ]]
 then
 	# echo 'linux'
+	python -m venv venv
+	source venv/bin/activate
+	pip install -r requirements.txt
 	python app.py $1 $2
 fi
 
 if [[ $OSTYPE == 'msys'* ]]
 then
 	# echo 'windows'
+	python -m venv venv
+	source venv/Scripts/activate
+	pip install -r requirements.txt
 	py app.py $1 $2
 fi
-
-
