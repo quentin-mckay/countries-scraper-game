@@ -171,6 +171,8 @@ def get_country_guess():
 	'''Get input from user. If user types 'show', display countries and ask again'''
 	guess = input(color_text("Guess the country:", ending=' '))
 	print()
+
+	guess = guess.replace(' ', '_')
 	
 	if guess == 'show':
 		show_countries()
@@ -306,6 +308,7 @@ def play_game():
 		guess = get_country_guess()
 		
 		
+		
 		if guess == answer_country:
 			print("Goooooooooal! Congratulations, you won!")
 			print()
@@ -317,7 +320,7 @@ def play_game():
 			time_taken = round(time() - start_time, 2)
 
 			num_guesses = starting_guesses - guesses_remaining
-			write_to_high_scores(num_guesses+1, time_taken, answer_country)
+			write_to_high_scores(num_guesses, time_taken, answer_country)
 
 			break
 		else:
@@ -327,6 +330,7 @@ def play_game():
 
 	if guesses_remaining == 0:
 		color_print(f'Sorry you ran out of guesses. The correct country was {answer_country}.\n')
+		print()
 
 	again = ''
 	while again not in ('y', 'yes', 'n', 'no'):
@@ -453,7 +457,10 @@ def intro_display():
 def show_countries():
 	'''Print sorted list of countries'''
 
-	[print(country) for country in sorted(countries)] # print sorted list
+ 	# print sorted list
+	for country in sorted(countries):
+		country = country.replace('_', ' ')
+		print(country)
 	print()
 
 
@@ -498,7 +505,7 @@ def start():
 		case '2':
 			scores = get_high_scores()
 			show_high_scores(scores)
-			print(0)
+			print()
 			start() # restart application
 		case '3':
 			print('''
