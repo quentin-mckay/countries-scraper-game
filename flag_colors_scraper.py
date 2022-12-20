@@ -1,3 +1,6 @@
+# Utility script to scrape all the flag hex codes from flagcolorcodes.com
+# Stores the data into "flag_colors.json"
+
 import requests
 from bs4 import BeautifulSoup
 from countries import countries

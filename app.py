@@ -16,7 +16,6 @@ from time import sleep
 os.system('clear')
 
 
-
 # ============================== regex cleaning functions ==============================
 
 def filter_country_name(string, country_name, replacement=''):
@@ -143,6 +142,7 @@ def write_to_high_scores(guesses_remaining, elapsed_time, country):
 		})
 
 
+
 def get_high_scores():
 	'''Reads high_scores.csv and returns list of all rows'''
 
@@ -168,9 +168,9 @@ def show_high_scores(csv_list):
 
 
 
-
 def get_country_guess():
 	'''Get input from user. If user types 'show', display countries and ask again'''
+
 	guess = input(color_text("Guess the country:", ending=' '))
 	print()
 
@@ -218,7 +218,6 @@ def play_game():
 	guesses_remaining = starting_guesses
 	facts_remaining = 4 # counter to keep track of which fact to display next
 
-
 	# main hints loop
 	while guesses_remaining > 0:
 
@@ -244,7 +243,6 @@ def play_game():
 			hint_option = input('> ')
 
 		print()
-
 
 		match hint_option:
 			# Random Sentence
@@ -311,7 +309,6 @@ def play_game():
 		guess = get_country_guess()
 		
 		
-		
 		if guess == answer_country:
 			print(rainbow('*********************************************'))
 			print("Goooooooooal! Congratulations, you won!")
@@ -332,7 +329,6 @@ def play_game():
 			break
 		else:
 			guesses_remaining -= 1
-		
 
 
 	if guesses_remaining == 0:
@@ -350,8 +346,6 @@ def play_game():
 		print()
 		start()
 	
-
-
 
 # ============================== rainbow print ==============================
 def random_color():
@@ -454,7 +448,6 @@ def intro_display():
 		os.system('clear')
 
 		sleep(1.5)
-
 
 		flash_print('===== World Cup Country Quiz Game =====')
 		print()
