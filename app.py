@@ -244,65 +244,69 @@ def play_game():
 
 		print()
 
-		match hint_option:
+		# match hint_option:
 			# Random Sentence
-			case '1':
-				combined = info['first paragraph'] + info['second paragraph']
-				sentences = combined.split('.')
-				# print(sentences)
+			# case '1':
+		if hint_option == '1':
+			combined = info['first paragraph'] + info['second paragraph']
+			sentences = combined.split('.')
+			# print(sentences)
 
-				sentence = ''
-				while len(sentence) < 5: # filter out occasional oddities
-					sentence = choice(sentences)
-					sentence = sentence.strip()
+			sentence = ''
+			while len(sentence) < 5: # filter out occasional oddities
+				sentence = choice(sentences)
+				sentence = sentence.strip()
 
-				color_print("Here's a random sentence:")
-				print()
-				color_print(sentence + '.')
-				print()
+			color_print("Here's a random sentence:")
+			print()
+			color_print(sentence + '.')
+			print()
 
 			# Fact
-			case '2':
-				# anthem
-				if facts_remaining == 4:
-					# if not info['anthem']:
-					# 	continue
-					anthem = clean_text(info['anthem'], answer_country)
-					color_print(f"The national anthem of the country is {anthem}.")
-				# leader
-				elif facts_remaining == 3:
-					if info.get('president'):
-						color_print(f"The country's president is {info['president']}.")
-					elif info.get('prime minister'):
-						color_print(f"The country's prime minister is {info['prime minister']}.")
-				# currency
-				elif facts_remaining == 2:
-					color_print(f"The country's currency is {info['currency']}.")
-				# capital
-				elif facts_remaining == 1:
-					color_print(f"The country's capital is {info['capital']}.")
-				elif facts_remaining == 0:
-					color_print('Sorry, there are no new facts. Please choose another hint type.\n')
-					print()
-					continue
-
+			# case '2':
+		elif hint_option == '2':
+			# anthem
+			if facts_remaining == 4:
+				# if not info['anthem']:
+				# 	continue
+				anthem = clean_text(info['anthem'], answer_country)
+				color_print(f"The national anthem of the country is {anthem}.")
+			# leader
+			elif facts_remaining == 3:
+				if info.get('president'):
+					color_print(f"The country's president is {info['president']}.")
+				elif info.get('prime minister'):
+					color_print(f"The country's prime minister is {info['prime minister']}.")
+			# currency
+			elif facts_remaining == 2:
+				color_print(f"The country's currency is {info['currency']}.")
+			# capital
+			elif facts_remaining == 1:
+				color_print(f"The country's capital is {info['capital']}.")
+			elif facts_remaining == 0:
+				color_print('Sorry, there are no new facts. Please choose another hint type.\n')
 				print()
+				continue
 
-				facts_remaining -= 1
+			print()
+
+			facts_remaining -= 1
 
 			# flag color text
-			case '3':
-				if num_flag_colors == len(flag_colors):
-					color_print("Maximum flag colors reached. Please choose another hint type.")
-					print()
-					continue
-				else:
-					num_flag_colors += 1
-					# guesses_remaining -=1
-					# continue
-			case ('q' | 'Q'):
+			# case '3':
+		elif hint_option == '3':
+			if num_flag_colors == len(flag_colors):
+				color_print("Maximum flag colors reached. Please choose another hint type.")
+				print()
+				continue
+			else:
+				num_flag_colors += 1
+				# guesses_remaining -=1
+				# continue
+			# case ('q' | 'Q'):
+		elif hint_option in ['q', 'Q']:
 				# print()
-				break
+			break
 		# print()
 
 
